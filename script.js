@@ -1,49 +1,63 @@
-const CLIENT_ID = "1daf8d4ac6614f9fa6ba85fc46113601";
-const CLIENT_SECRET = "57146e1485004882b030525913481215";
+const API_KEY = "3c542c16c19b5905f4be99f181599119";
 
-// Function to get Spotify API Token
-async function getAccessToken() {
-    const response = await fetch("https://accounts.spotify.com/api/token", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            Authorization: "Basic " + btoa(CLIENT_ID + ":" + CLIENT_SECRET),
-        },
-        body: "grant_type=client_credentials",
-    });
-    const data = await response.json();
-    return data.access_token;
-}
 
-// Function to search for a song
-async function searchSong(query, accessToken) {
-    const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=1`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    const data = await response.json();
-    return data.tracks.items.length > 0 ? data.tracks.items[0].id : null;
-}
-
-// Function to get song recommendations
-async function getRecommendations(songId, accessToken) {
-    const response = await fetch(`https://api.spotify.com/v1/recommendations?seed_tracks=${songId}&limit=5`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    const data = await response.json();
-    return data.tracks.map(track => `${track.name} - ${track.artists.map(a => a.name).join(", ")}`);
-}
-
-// Main function to execute the process
-async function findSimilarSongs(songName) {
-    const accessToken = await getAccessToken();
-    const songId = await searchSong(songName, accessToken);
-    if (!songId) {
-        console.log("Song not found!");
-        return;
+const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzYzU0MmMxNmMxOWI1OTA1ZjRiZTk5ZjE4MTU5OTExOSIsIm5iZiI6MTc0MzU5NTY5OC4wMTYsInN1YiI6IjY3ZWQyOGIyZjVhZTcxNDM1ZGFhZjkxNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.eFVfdA_5C03V-bLRSKepRJTPEDumJOvFqe5OWkt6WgU'
     }
-    const recommendations = await getRecommendations(songId, accessToken);
-    console.log("Recommended Songs:", recommendations);
+  };
+  
+  fetch('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', options)
+    .then(res => res.json())
+    .then(res => console.log(res))
+    .catch(err => console.error(err));
+
+const BASE_URL = "https://api.themoviedb.org/3/movie";
+const API_URL = BASE_URL + "/popular" + "?api_key=" + API_KEY;
+const IMG_URL = "https://image.tmdb.org/t/p/w500";
+
+const main = document.getElementById("main");
+
+getMovies(API_URL);
+
+function getMovies(url) {
+    fetch(url).then(res => res.json()).then(data => {
+        console.log(data.results);
+        showMovies(data.results);
+    })
 }
 
-// Example Usage
-findSimilarSongs("Blinding Lights");
+function showMovies(data) {
+    main.innerHTML = "";
+
+    data.forEach(movie => {
+        const { title, poster_path, vote_average, overview } = movie;
+        const movieEl = document.createElement("div");
+        movieEl.classList.add("movie");
+        movieEl.innerHTML = `
+            <img src="${IMG_URL+poster_path}" alt="${title}">
+            <div class="movie-info">
+                <h3>${title}</h3>
+                <span class="${getColor(vote_average)}">${vote_average}</span>
+            </div>
+            
+            <div class="overview">
+                <h3>Overview</h3>
+                ${overview}
+            </div>
+        `
+        main.appendChild(movieEl);
+    })
+}
+
+function getColor(vote) {
+    if(vote >= 8) {
+        return "green";
+    } else if(vote >= 5) {
+        return "orange";
+    } else {
+        return "red";
+    }
+}
