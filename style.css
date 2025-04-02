@@ -109,3 +109,30 @@ main {
     transform: translateY(0);
     
 }
+
+#tags {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 10px auto;
+}
+
+.tag {
+    color: white;
+    padding: 10px 15px;
+    background-color: gray;
+    border-radius: 50px;
+    margin: 5px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tag.highlight {
+    color: black;
+}
+
+.no-results {
+    color: white;
+}
