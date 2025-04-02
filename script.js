@@ -9,13 +9,13 @@ const options = {
     }
   };
   
-  fetch('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', options)
-    .then(res => res.json())
-    .then(res => console.log(res))
-    .catch(err => console.error(err));
+//   fetch('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', options)
+//     .then(res => res.json())
+//     .then(res => console.log(res))
+//     .catch(err => console.error(err));
 
 const BASE_URL = "https://api.themoviedb.org/3";
-const API_URL = BASE_URL + "/movie/popular" + "?api_key=" + API_KEY;
+const POPULAR_URL = BASE_URL + "/movie/popular" + "?api_key=" + API_KEY;
 const IMG_URL = "https://image.tmdb.org/t/p/w500";
 const SEARCH_URL = BASE_URL + "/search/movie" + "?api_key=" + API_KEY;
 
@@ -24,7 +24,7 @@ const main = document.getElementById("main");
 const form = document.getElementById("form");
 const search = document.getElementById("search");
 
-getMovies(API_URL);
+getMovies(POPULAR_URL);
 
 function getMovies(url) {
     fetch(url).then(res => res.json()).then(data => {
@@ -44,7 +44,7 @@ function showMovies(data) {
             <img src="${IMG_URL+poster_path}" alt="${title}">
             <div class="movie-info">
                 <h3>${title}</h3>
-                <span class="${getColor(vote_average)}">${vote_average}</span>
+                <span class="${getColor(vote_average)}">${vote_average.toFixed(1)}</span>
             </div>
             
             <div class="overview">
@@ -75,6 +75,6 @@ form.addEventListener("submit", (e) => {
         getMovies(SEARCH_URL + "&query=" + searchTerm);
     }
     else {
-        getMovies(API_URL);
+        getMovies(POPULAR_URL);
     }
 })
