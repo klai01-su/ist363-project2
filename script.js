@@ -14,11 +14,15 @@ const options = {
     .then(res => console.log(res))
     .catch(err => console.error(err));
 
-const BASE_URL = "https://api.themoviedb.org/3/movie";
-const API_URL = BASE_URL + "/popular" + "?api_key=" + API_KEY;
+const BASE_URL = "https://api.themoviedb.org/3";
+const API_URL = BASE_URL + "/movie/popular" + "?api_key=" + API_KEY;
 const IMG_URL = "https://image.tmdb.org/t/p/w500";
+const SEARCH_URL = BASE_URL + "/search/movie" + "?api_key=" + API_KEY;
+
 
 const main = document.getElementById("main");
+const form = document.getElementById("form");
+const search = document.getElementById("search");
 
 getMovies(API_URL);
 
@@ -61,3 +65,16 @@ function getColor(vote) {
         return "red";
     }
 }
+
+form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const searchTerm = search.value;
+
+    if(searchTerm) {
+        getMovies(SEARCH_URL + "&query=" + searchTerm);
+    }
+    else {
+        getMovies(API_URL);
+    }
+})
