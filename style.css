@@ -25,8 +25,6 @@ header {
     gap: 2rem;
 }
 
-
-
 .logo {
     flex: 1;
     margin: 0;
@@ -149,6 +147,26 @@ footer {
     background-color: #2e343f;
     color: var(--text-color);
 }
+
+.footer-content {
+    text-align: center;
+    padding: 0 1rem;
+    font-size: 0.9rem;
+    max-width: 800px;
+    width: 100%;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    footer {
+        padding: 1rem;
+    }
+
+    .footer-content {
+        font-size: 0.8rem;
+    }
+}
+
 
 main {
     display: flex;
