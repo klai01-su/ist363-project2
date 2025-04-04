@@ -135,7 +135,6 @@ function setGenres() {
                     selectedGenre.push(genre.id);
                 }
             }
-            console.log(selectedGenre);
             getMovies(POPULAR_URL + '&with_genres='+ encodeURI(selectedGenre.join(",")));
             highlightselection();
         })    
@@ -219,7 +218,7 @@ function showMovies(data) {
     main.innerHTML = "";
 
     data.forEach(movie => {
-        const { title, release_date, poster_path, vote_average, overview } = movie;
+        const { title, release_date, poster_path, vote_average, overview, id } = movie;
         const movieEl = document.createElement("div");
         movieEl.classList.add("movie");
         movieEl.innerHTML = `
@@ -232,10 +231,88 @@ function showMovies(data) {
             <div class="overview">
                 <h3>${title} (${release_date.substring(0, 4)})</h3>
                 ${overview}
+                <br/>
+                <div class="watch-trailer" id="${id}">Watch Trailer</div>
             </div>
         `
         main.appendChild(movieEl);
+
+        document.getElementById(id).addEventListener("click", () => {
+          console.log(id);
+          openNav(movie);
+        })
     })
+}
+const youtubeAPI = "AIzaSyA1pVKYV2RrItwywuZ9GQ4SK0E-J4JaVkU"
+
+// "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=3&q=whiplash%20trailer&type=video&key="
+
+const youtubeURL = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&type=video&key=" + youtubeAPI + "&q=";
+
+const overlayContent = document.getElementById("overlay-content");
+
+/*
+function openNav(movie) {
+  let title = movie.title;
+  fetch(youtubeURL + title + "movie official trailer").then(res => res.json()).then(videoData => {
+    console.log(videoData.items);
+    if (videoData.items) {
+      document.getElementById("myNav").style.width = "100%";
+      if (videoData.items.length > 0) {
+        var embed = [];
+        videoData.items.forEach(video => {
+          let {id.videoId, snippet.title} = video;
+          embed.push(`
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/${id.videoId}" title="${snippet.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            `);
+        })
+        overlayContent.innerHTML = embed.join("");
+      } else {
+        overlayContent.innerHTML = `<h1 class="no-results">No results Found</h1>`;
+      }
+    }
+  })
+}
+*/
+
+function openNav(movie) {
+  const title = movie.title;
+  const releaseDate = movie.release_date;
+  const query = encodeURIComponent(title + releaseDate + " movie official trailer");
+  
+  fetch(`${youtubeURL}${query}`)
+    .then(res => res.json())
+    .then(videoData => {
+      console.log(videoData.items);
+      document.getElementById("myNav").style.width = "100%";
+      const overlayContent = document.getElementById("overlay-content");
+
+      if (videoData.items && videoData.items.length > 0) {
+        const embed = videoData.items.map(video => {
+          const videoId = video.id.videoId;
+          const videoTitle = video.snippet.title;
+          return `
+            <iframe width="560" height="315" 
+              src="https://www.youtube.com/embed/${videoId}" 
+              title="${videoTitle}" frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+            </iframe>`;
+        });
+        overlayContent.innerHTML = embed.join("");
+      } else {
+        overlayContent.innerHTML = `<h1 class="no-results">No results Found</h1>`;
+      }
+    })
+    .catch(err => {
+      console.error("YouTube API error:", err);
+      document.getElementById("overlay-content").innerHTML = `<h1 class="no-results">Error fetching trailer</h1>`;
+    });
+}
+
+
+function closeNav() {
+  document.getElementById("myNav").style.width = "0%";
 }
 
 function getColor(vote) {
