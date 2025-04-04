@@ -369,3 +369,18 @@ function pageCall(page) {
     getMovies(url);
   }
 }
+
+const menuToggle = document.getElementById('menu-toggle');
+const searchToggle = document.getElementById('search-toggle');
+const navbar = document.getElementById('navbar');
+const searchForm = document.querySelector('.search-form');
+
+menuToggle.addEventListener('click', () => {
+  navbar.classList.toggle('show');
+  searchForm.classList.remove('show');
+});
+
+searchToggle.addEventListener('click', () => {
+  searchForm.classList.toggle('show');
+  navbar.classList.remove('show');
+});
