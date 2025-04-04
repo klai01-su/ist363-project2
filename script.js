@@ -1,18 +1,5 @@
 const API_KEY = "3c542c16c19b5905f4be99f181599119";
 
-// const options = {
-//     method: 'GET',
-//     headers: {
-//       accept: 'application/json',
-//       Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzYzU0MmMxNmMxOWI1OTA1ZjRiZTk5ZjE4MTU5OTExOSIsIm5iZiI6MTc0MzU5NTY5OC4wMTYsInN1YiI6IjY3ZWQyOGIyZjVhZTcxNDM1ZGFhZjkxNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.eFVfdA_5C03V-bLRSKepRJTPEDumJOvFqe5OWkt6WgU'
-//     }
-//   };
-  
-//   fetch('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', options)
-//     .then(res => res.json())
-//     .then(res => console.log(res))
-//     .catch(err => console.error(err));
-
 const BASE_URL = "https://api.themoviedb.org/3";
 const POPULAR_URL = BASE_URL + "/discover/movie?sort_by=popularity.desc&" + "api_key=" + API_KEY;
 const IMG_URL = "https://image.tmdb.org/t/p/w500";
@@ -171,10 +158,7 @@ function clearBtn() {
             getMovies(POPULAR_URL);
         })
         tagsEl.append(clear);
-
-    }
-
-    
+    }   
 }
 
 getMovies(POPULAR_URL);
@@ -195,14 +179,13 @@ function getMovies(url) {
 
             if (currentPage <= 1) {
               prev.classList.add("disabled");
-              next.classList.remove("disabled");
-
-            } else if (currentPage >= totalPages) {
-              prev.classList.remove("disabled");
-              next.classList.add("disabled");
-                
             } else {
               prev.classList.remove("disabled");
+            }
+            
+            if (currentPage >= totalPages) {
+              next.classList.add("disabled");
+            } else {
               next.classList.remove("disabled");
             }
 
@@ -253,29 +236,6 @@ const youtubeURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&ty
 
 const overlayContent = document.getElementById("overlay-content");
 
-/*
-function openNav(movie) {
-  let title = movie.title;
-  fetch(youtubeURL + title + "movie official trailer").then(res => res.json()).then(videoData => {
-    console.log(videoData.items);
-    if (videoData.items) {
-      document.getElementById("myNav").style.width = "100%";
-      if (videoData.items.length > 0) {
-        var embed = [];
-        videoData.items.forEach(video => {
-          let {id.videoId, snippet.title} = video;
-          embed.push(`
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/${id.videoId}" title="${snippet.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-            `);
-        })
-        overlayContent.innerHTML = embed.join("");
-      } else {
-        overlayContent.innerHTML = `<h1 class="no-results">No results Found</h1>`;
-      }
-    }
-  })
-}
-*/
 
 function openNav(movie) {
   const title = movie.title;
@@ -341,17 +301,30 @@ form.addEventListener("submit", (e) => {
     }
 })
 
+// prev.addEventListener("click", () => {
+//   if (prevPage > 0) {
+//     pageCall(prevPage);
+//   }
+// })
+
+// next.addEventListener("click", () => {
+//   if (nextPage <= totalPages) {
+//     pageCall(nextPage);
+//   }
+// })
+
 prev.addEventListener("click", () => {
-  if (prevPage > 0) {
+  if (!prev.classList.contains("disabled")) {
     pageCall(prevPage);
   }
-})
+});
 
 next.addEventListener("click", () => {
-  if (nextPage <= totalPages) {
+  if (!next.classList.contains("disabled")) {
     pageCall(nextPage);
   }
-})
+});
+
 
 function pageCall(page) {
   let urlSplit = lastURL.split("?");
