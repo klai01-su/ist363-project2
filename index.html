@@ -3,15 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project 2: Movie Database</title>
+    <title>IST363 Project 2: Movie Database</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
+        <h1 class="logo">Movie Database</h1>
+        <nav class="navbar">
+            <ul>
+                <li><a href="">New</a></li>
+                <li><a href="">Upcoming</a></li>
+                <li><a href="">Popular</a></li>
+                <li><a href="">Top Rated</a></li>
+                <li><a href="#">My List</a></li>
+            </ul>
+        </nav>
         <form id="form">
             <input type="text" id="search" placeholder="Search" class="search">
         </form>
     </header>
+    
     <div id="tags"></div>
 
     <div id="myNav" class="overlay">
@@ -25,6 +36,12 @@
         <div class="current" id="current">1</div>
         <div class="page" id="next">&gt;&gt;</div>
     </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div>&copy; Movie Database. Made by Kavias Lai. All rights reserved.</div>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>

@@ -247,7 +247,9 @@ const youtubeAPI = "AIzaSyA1pVKYV2RrItwywuZ9GQ4SK0E-J4JaVkU"
 
 // "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=3&q=whiplash%20trailer&type=video&key="
 
-const youtubeURL = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&type=video&key=" + youtubeAPI + "&q=";
+// const youtubeURL = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=3&type=video&key=" + youtubeAPI + "&q=";
+
+const youtubeURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&key=AIzaSyA1pVKYV2RrItwywuZ9GQ4SK0E-J4JaVkU&q=`;
 
 const overlayContent = document.getElementById("overlay-content");
 
@@ -277,8 +279,8 @@ function openNav(movie) {
 
 function openNav(movie) {
   const title = movie.title;
-  const releaseDate = movie.release_date;
-  const query = encodeURIComponent(title + releaseDate + " movie official trailer");
+  const releaseDate = movie.release_date.substring(0, 4);
+  const query = encodeURIComponent(title + " " + releaseDate + " trailer");
   
   fetch(`${youtubeURL}${query}`)
     .then(res => res.json())
