@@ -136,3 +136,30 @@ main {
 .no-results {
     color: white;
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 30px;
+}
+
+.page {
+    padding: 20px;
+}
+
+.page.disabled {
+    cursor: not-allowed;
+    color: gray;
+}
+
+.page:hover:not(.disabled) {
+    cursor: pointer;
+}
+
+.current {
+    padding: 20px;
+    font-size: 20px;
+    font-weight: 600;
+}
+

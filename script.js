@@ -1,12 +1,12 @@
 const API_KEY = "3c542c16c19b5905f4be99f181599119";
 
-const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzYzU0MmMxNmMxOWI1OTA1ZjRiZTk5ZjE4MTU5OTExOSIsIm5iZiI6MTc0MzU5NTY5OC4wMTYsInN1YiI6IjY3ZWQyOGIyZjVhZTcxNDM1ZGFhZjkxNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.eFVfdA_5C03V-bLRSKepRJTPEDumJOvFqe5OWkt6WgU'
-    }
-  };
+// const options = {
+//     method: 'GET',
+//     headers: {
+//       accept: 'application/json',
+//       Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzYzU0MmMxNmMxOWI1OTA1ZjRiZTk5ZjE4MTU5OTExOSIsIm5iZiI6MTc0MzU5NTY5OC4wMTYsInN1YiI6IjY3ZWQyOGIyZjVhZTcxNDM1ZGFhZjkxNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.eFVfdA_5C03V-bLRSKepRJTPEDumJOvFqe5OWkt6WgU'
+//     }
+//   };
   
 //   fetch('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', options)
 //     .then(res => res.json())
@@ -102,6 +102,16 @@ const form = document.getElementById("form");
 const search = document.getElementById("search");
 const tagsEl = document.getElementById("tags");
 
+const prev = document.getElementById("prev");
+const next = document.getElementById("next");
+const current = document.getElementById("current");
+
+var currentPage = 1;
+var nextPage = 2;
+var prevPage = 3;
+var lastURL = "";
+var totalPages = 100;
+
 var selectedGenre = [];
 setGenres();
 function setGenres() {
@@ -172,14 +182,36 @@ getMovies(POPULAR_URL);
 
 
 function getMovies(url) {
+  lastURL = url;
     fetch(url).then(res => res.json()).then(data => {
         console.log(data.results);
         if (data.results.length !== 0) {
             showMovies(data.results);
+            currentPage = data.page;
+            nextPage = currentPage + 1;
+            prevPage = currentPage - 1;
+            totalPages = data.total_pages;
+
+            current.innerText = currentPage;
+
+            if (currentPage <= 1) {
+              prev.classList.add("disabled");
+              next.classList.remove("disabled");
+
+            } else if (currentPage >= totalPages) {
+              prev.classList.remove("disabled");
+              next.classList.add("disabled");
+                
+            } else {
+              prev.classList.remove("disabled");
+              next.classList.remove("disabled");
+            }
+
+            window.scrollTo({ top: 0, behavior: "smooth" });
+
         } else {
             main.innerHTML = `<h1 class="no-results">No results Found</h1>`;
         }
-        
     })
 }
 
@@ -187,7 +219,7 @@ function showMovies(data) {
     main.innerHTML = "";
 
     data.forEach(movie => {
-        const { title, poster_path, vote_average, overview } = movie;
+        const { title, release_date, poster_path, vote_average, overview } = movie;
         const movieEl = document.createElement("div");
         movieEl.classList.add("movie");
         movieEl.innerHTML = `
@@ -198,7 +230,7 @@ function showMovies(data) {
             </div>
             
             <div class="overview">
-                <h3>Overview</h3>
+                <h3>${title} (${release_date.substring(0, 4)})</h3>
                 ${overview}
             </div>
         `
@@ -229,3 +261,32 @@ form.addEventListener("submit", (e) => {
         getMovies(POPULAR_URL);
     }
 })
+
+prev.addEventListener("click", () => {
+  if (prevPage > 0) {
+    pageCall(prevPage);
+  }
+})
+
+next.addEventListener("click", () => {
+  if (nextPage <= totalPages) {
+    pageCall(nextPage);
+  }
+})
+
+function pageCall(page) {
+  let urlSplit = lastURL.split("?");
+  let queryParams = urlSplit[1].split("&");
+  let key = queryParams[queryParams.length -1].split("=");
+  if (key[0] != "page") {
+    let url = lastURL + "&page=" + page;
+    getMovies(url);
+  } else {
+    key[1] = page.toString();
+    let a = key.join("=");
+    queryParams[queryParams.length - 1] = a;
+    let b = queryParams.join("&");
+    let url = urlSplit[0] + "?" + b;
+    getMovies(url);
+  }
+}
