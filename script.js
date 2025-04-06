@@ -258,7 +258,7 @@ form.addEventListener("submit", (e) => {
     getMovies(searchTerm ? `${SEARCH_URL}&query=${searchTerm}` : POPULAR_URL);
 });
 
-// Pagination
+
 prev.addEventListener("click", () => !prev.classList.contains("disabled") && pageCall(prevPage));
 next.addEventListener("click", () => !next.classList.contains("disabled") && pageCall(nextPage));
 
